@@ -65,6 +65,42 @@ class Rover
 		discover_config_files
 	end
 
+	def config_env config_type
+		return nil unless config_type
+		self.send("config_env_#{config_type}")
+	end
+
+	def config_env_npm
+		unless which('npm')
+			raise "you are fucked. go install npm"
+		end
+	end
+
+	def config_env_bundle
+		# nothing to do
+		unless which('bundle')
+			exec_cmd "gem install bundler"
+			unless which('bundle')
+				raise "you're fucked. go install bundler"
+			end
+		end
+	end
+
+	# TODO BROKEN
+	def config_env_pip
+		raise "Broken"
+		['virtualenv','pip'].each do |exe|
+			unless which(exe)
+				raise "you're fucked; missing #{exe}. please install first"
+			end
+		end
+
+		python_dir = "#{@start_directory}/.python"
+		exec_cmd "mkdir -p #{python_dir}"
+		exec_cmd "virtualenv #{python_dir}"
+		ENV['PATH'] = "#{python_dir}:#{ENV['PATH']}"
+	end
+
 	def install_configs
 		discovered_config_files = discover_config_files
 
@@ -79,28 +115,25 @@ class Rover
 			discovered_config_files.each do |config_file_name,config_parts|
 				puts "Installing Config: #{config_file_name}".colorize( :color => :white, :background => :blue )
 
-				if executable = which(config_parts['config_type'])
-					cmd = "#{executable} "
-					case config_parts['config_type']
-					when 'pip'
-						cmd += "install -r #{config_parts['config_file']}"
-					when 'bundle'
-						cmd += "install"
-					when 'npm'
-						cmd += "install"
-					else
-						logger.info "Unknown Config Type: #{config_parts['config_type']}"
-						next
-					end
-
-					
-					change_dir(config_parts['config_path'])
-					exec_cmd(cmd)
-
-					puts "\n\n"
+				config_env(config_parts['config_type'])
+				
+				cmd = "#{executable} "
+				case config_parts['config_type']
+				when 'pip'
+					cmd += "install -r #{config_parts['config_file']}"
+				when 'bundle'
+					cmd += "install"
+				when 'npm'
+					cmd += "install"
 				else
-					puts "Unable to locate #{config_parts['config_type']} executable. Unable to install #{config_parts['config_file']}".colorize(:color=>:red).underline
+					logger.info "Unknown Config Type: #{config_parts['config_type']}"
+					next
 				end
+					
+				change_dir(config_parts['config_path'])
+				exec_cmd(cmd)
+
+				puts "\n\n"
 			end
 
 			puts "Finished attempting to install config files. Moving back to the starting directory".colorize( :color => :white, :background => :blue )
@@ -149,3 +182,6 @@ class Rover
 		config_file.include? 'node_module'
 	end
 end
+
+r = Rover.new
+r.config_env('pip')
