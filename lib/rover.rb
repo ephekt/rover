@@ -88,7 +88,6 @@ class Rover
 
 	# TODO BROKEN
 	def config_env_pip
-		raise "Broken"
 		['virtualenv','pip'].each do |exe|
 			unless which(exe)
 				raise "you're fucked; missing #{exe}. please install first"
@@ -98,7 +97,8 @@ class Rover
 		python_dir = "#{@start_directory}/.python"
 		exec_cmd "mkdir -p #{python_dir}"
 		exec_cmd "virtualenv #{python_dir}"
-		ENV['PATH'] = "#{python_dir}:#{ENV['PATH']}"
+		ENV['PATH'] = "#{python_dir}/bin:#{ENV['PATH']}"
+		ENV['PYTHONPATH'] = ""
 	end
 
 	def install_configs
