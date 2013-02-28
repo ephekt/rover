@@ -117,7 +117,7 @@ class Rover
 
 				config_env(config_parts['config_type'])
 				
-				cmd = "#{executable} "
+				cmd = "#{config_parts['config_type']} "
 				case config_parts['config_type']
 				when 'pip'
 					cmd += "install -r #{config_parts['config_file']}"
@@ -182,6 +182,3 @@ class Rover
 		config_file.include? 'node_module'
 	end
 end
-
-r = Rover.new
-r.config_env('pip')
