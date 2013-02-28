@@ -4,24 +4,6 @@
 # Required in all Delphi projects
 
 # Default task lists other tasks
-desc "See all rake tasks for this project"
-task :default do
-	sh "rake -T"
-end
-
-# Cross-platform way of finding an executable in the $PATH.
-#
-#   which('ruby') #=> /usr/bin/ruby
-def which(cmd)
-	exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-	ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
-	exts.each { |ext|
-		exe = File.join(path, "#{cmd}#{ext}")
-		return exe if File.executable? exe
-	}
-	end
-	return nil
-end
 
 desc "See the authors of this project"
 task :authors do
@@ -32,25 +14,6 @@ desc "Run this project (install is invoked)"
 task :run => :install do
   sh "rackup"
 end
-
-desc "Application Requirements"
-task :requirements do
-	puts "System Requires\n\n"
-	puts "** Application requires\nRuby 1.9.3\nRubyGems 1.3+\nBundler (gem)\n\n** Gemfile Requirements"
-	sh "cat Gemfile"
-end
-
-desc "Install app-level dependencies (including Bundler)"
-task :install do
-	unless which('bundle')
-		sh "gem install bundler"
-	end
-	sh "bundle install"
-end
-
-#
-# Helper methods and Tasks for this specific project
-#
 
 def ensure_restart_txt
   sh "mkdir tmp/; touch tmp/restart.txt"

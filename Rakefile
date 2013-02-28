@@ -1,7 +1,8 @@
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
-  t.libs << 'test'
+	`rm -rf test/node_project/node_modules`
+	t.libs << 'test'
 end
 
 desc "Run tests"
