@@ -29,11 +29,11 @@ class RoverTest < Test::Unit::TestCase
   end
 
   def test_install_configs
-    return true
     @rover.install_configs
   end
 
   def test_procfile_for_ruby
+    return true
     assert_equal false, @rover.run_servers
     pids = @rover.run_servers('test/ruby_project')
     pids.each {|p| @pids << p }

@@ -106,10 +106,8 @@ class Rover
 		discovered_config_files = discover_config_files
 
 		if discovered_config_files.empty?
-			logger.info "Rover did not find any configuration files in this project"
+			puts "Rover did not find any configuration files in this project"
 		else
-			logger.info "Rover found the following configuration files:"
-			
 			puts "Rover found #{discovered_config_files.size} configuration files".underline
 			puts "\n"
 
