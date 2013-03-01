@@ -89,7 +89,7 @@ class Rover
 
 	# TODO BROKEN
 	def config_env_pip
-		['virtualenv','pip'].each do |exe|
+		['virtualenv'].each do |exe|
 			unless which(exe)
 				raise "you're fucked; missing #{exe}. please install first"
 			end
