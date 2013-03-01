@@ -1,6 +1,7 @@
 require 'logger'
 require 'open3'
 require 'colorize'
+require 'foreman'
 
 module Utils
 	# Cross-platform way of finding an executable in the $PATH.
@@ -140,6 +141,34 @@ class Rover
 
 			change_dir(@start_directory)
 		end
+	end
+
+	def run_servers procfile_location = nil
+		if procfile_location && !procfile_location.end_with?('/')
+			procfile_location = "#{procfile_location}/"
+		end
+
+		specified_procfile = "#{procfile_location}Procfile"
+		if procfile_location
+			if File.exists?(specified_procfile)
+				puts "Loading Procfile found in #{specified_procfile}"
+				change_dir procfile_location
+			else
+				puts "No Procfile found at #{procfile_location}"
+				return false
+			end
+		else
+			puts "No Procfile location specified, defaulting to #{@start_directory}"
+			change_dir @start_directory
+			if File.exists?('Procfile')
+				puts "Profile exists... running foreman"
+			else
+				puts "No Procfile found. Rover can not run servers without a Procfile"
+				return false
+			end
+		end
+
+		`foreman start`
 	end
 
 	private
