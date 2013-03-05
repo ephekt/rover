@@ -21,7 +21,7 @@ Rover discoveres dependency configuration files in your project.
 ####Example:
 
 	cd ~/your_project
+	rover configs
 	rover install
 
-
-web: ruby hi.rb
+In the above example, Rover will look in your projects folder, and all sub folders, for configurations and then list them to standard output. The `install` command will install previously found configs.

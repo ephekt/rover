@@ -2,6 +2,7 @@ require 'rake/testtask'
 
 desc "Build gem"
 task :gemify do
+	sh 'mkdir -p gem'
 	sh 'rm -rf gem/*.gem'
 	sh 'gem build rover.gemspec'
 	sh 'mv rover-*.gem gem/'
