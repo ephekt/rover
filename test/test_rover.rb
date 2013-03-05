@@ -19,6 +19,10 @@ class RoverTest < Test::Unit::TestCase
     assert_equal @rover.start_directory, Dir.pwd
   end
 
+  def test_print_configs
+    @rover.pretty_print_configs
+  end
+
   def test_config_discovery
     configs = {"npm"=>"package.json","pip"=>"requirements.txt","bundle"=>"Gemfile"}
     
@@ -30,15 +34,5 @@ class RoverTest < Test::Unit::TestCase
 
   def test_install_configs
     @rover.install_configs
-  end
-
-  def test_procfile_for_ruby
-    return true
-    assert_equal false, @rover.run_servers
-    pids = @rover.run_servers('test/ruby_project')
-    pids.each {|p| @pids << p }
-    assert_equal false, pids.empty?
-
-    assert_equal "Hello World!", open('http://localhost:4567').read
   end
 end

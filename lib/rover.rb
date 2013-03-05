@@ -48,7 +48,7 @@ class Rover
 	include Logging
 	include Utils
 
-	attr_accessor :start_directory
+	attr_accessor :start_directory, :pids_created
 	
 	CONFIG_FILE_NAMES = {
 		"npm" => 'package.json',
@@ -58,12 +58,31 @@ class Rover
 
 	def initialize
 		@start_directory = Dir.pwd
+		@pids_created = []
 
 		puts "Rover is starting in #{@start_directory}"
 	end
 
 	def list_configs
 		discover_config_files
+	end
+
+	def pretty_print_configs
+		configs = discover_config_files
+		
+		out = "Rover found #{configs.size} dependency configurations\n"
+
+		index_count = 1
+		discover_config_files.each do |config,config_parts|
+			out += "--\n"
+			out +=  "#{index_count}: #{config}\n"
+			out += "#{index_count}: Type: #{config_parts['config_type']}\n"
+			out += "#{index_count}: File: #{config_parts['config_file']}\n"
+			out += "#{index_count}: Path: #{config_parts['config_path']}\n"
+			index_count+=1
+		end
+
+		puts out.colorize(:color => :blue)
 	end
 
 	def config_env config_type
@@ -73,8 +92,11 @@ class Rover
 
 	def config_env_npm
 		unless which('npm')
-			raise "you are fucked. go install npm"
+			puts "Please install npm to continue installing dependencies"
+			return false
 		end
+
+		true
 	end
 
 	def config_env_bundle
@@ -82,12 +104,14 @@ class Rover
 		unless which('bundle')
 			exec_cmd "gem install bundler"
 			unless which('bundle')
-				raise "you're fucked. go install bundler"
+				puts "Please install Bundler (gem install bundler) to continue installing dependencies"
+				return false
 			end
 		end
+
+		true
 	end
 
-	# TODO BROKEN
 	def config_env_pip
 		['virtualenv','pip'].each do |exe|
 			unless which(exe)
@@ -100,6 +124,8 @@ class Rover
 		exec_cmd "virtualenv #{python_dir}"
 		ENV['PATH'] = "#{python_dir}/bin:#{ENV['PATH']}"
 		ENV['PYTHONPATH'] = ""
+
+		true
 	end
 
 	def install_configs
@@ -114,7 +140,7 @@ class Rover
 			discovered_config_files.each do |config_file_name,config_parts|
 				puts "Installing Config: #{config_file_name}".colorize( :color => :white, :background => :blue )
 
-				config_env(config_parts['config_type'])
+				next unless config_env(config_parts['config_type'])
 				
 				cmd = "#{config_parts['config_type']} "
 				case config_parts['config_type']
@@ -135,12 +161,16 @@ class Rover
 				puts "\n\n"
 			end
 
+			puts "If you are using a Python project please add the following lines to a .env file in the project's root directory".colorize( :color => :white, :background => :blue )
+			puts "PATH=#{@start_directory}/.python/bin:$PATH".colorize( :color => :red).underline
+			puts "PYTHONPATH=''".colorize( :color => :red).underline
 			puts "Finished attempting to install config files. Moving back to the starting directory".colorize( :color => :white, :background => :blue )
 
 			change_dir(@start_directory)
 		end
 	end
 
+=begin
 	def run_servers procfile_location = nil
 		if procfile_location && !procfile_location.end_with?('/')
 			procfile_location = "#{procfile_location}/"
@@ -166,8 +196,9 @@ class Rover
 			end
 		end
 
-		`foreman start`
+		exec_cmd('foreman start')
 	end
+=end
 
 	private
 

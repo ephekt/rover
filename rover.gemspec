@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'rover'
-  s.version     = '0.0.1'
+  s.version     = '1.0.2'
   s.date        = '2013-03-03'
   s.summary     = "dependency config orchestration"
   s.description = "orchestrate the dependency installations of a project that uses npm +- bundler +- pip requirements"
@@ -10,6 +10,6 @@ Gem::Specification.new do |s|
   s.homepage    =
     'http://rubygems.org/gems/rover'
   s.add_runtime_dependency 'colorize'
-  s.add_runtime_dependency 'foreman'
+  # s.add_runtime_dependency 'foreman'
   s.executables << 'rover'
 end

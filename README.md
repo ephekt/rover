@@ -22,3 +22,6 @@ Rover discoveres dependency configuration files in your project.
 
 	cd ~/your_project
 	rover install
+
+
+web: ruby hi.rb

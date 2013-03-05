@@ -8,12 +8,12 @@ if ARGV.size <= 0
 	puts "You need at least one argument:\nrover install\nrover run"
 else
 	rover = Rover.new
-	puts ARGV.first.downcase
+	
 	case ARGV.first.downcase
 	when "install"
 		rover.install_configs
-	when "run"
-		rover.run_servers
+	when "configs"
+		rover.pretty_print_configs
 	else
 		puts "Unknown arguments: #{ARGV.inspect}"
 	end
