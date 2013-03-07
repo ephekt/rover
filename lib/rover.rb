@@ -1,7 +1,6 @@
 require 'logger'
 require 'open3'
 require 'colorize'
-require 'foreman'
 
 module Utils
 	# Cross-platform way of finding an executable in the $PATH.
@@ -172,6 +171,8 @@ class Rover
 
 =begin
 	def run_servers procfile_location = nil
+		require 'foreman'
+		
 		if procfile_location && !procfile_location.end_with?('/')
 			procfile_location = "#{procfile_location}/"
 		end
