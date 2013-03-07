@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'rover'
-  s.version     = '1.1.0'
+  s.version     = '1.1.1'
   s.date        = '2013-03-03'
   s.summary     = "dependency config orchestration"
   s.description = "orchestrate the dependency installations of a project that uses npm +- bundler +- pip requirements"
