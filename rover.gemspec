@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    =
     'http://rubygems.org/gems/rover'
   s.add_runtime_dependency 'colorize'
+  s.add_runtime_dependency 'json'
   # s.add_runtime_dependency 'foreman'
   s.executables << 'rover'
 end

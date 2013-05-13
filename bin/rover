@@ -14,6 +14,8 @@ else
 		rover.install_configs
 	when "configs"
 		rover.pretty_print_configs
+	when "gem_info"
+		rover.print_gem_infos
 	else
 		puts "Unknown arguments: #{ARGV.inspect}"
 	end

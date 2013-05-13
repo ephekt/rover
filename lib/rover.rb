@@ -1,6 +1,8 @@
 require 'logger'
 require 'open3'
 require 'colorize'
+require 'json'
+require 'open-uri'
 
 module Utils
 	# Cross-platform way of finding an executable in the $PATH.
@@ -47,7 +49,7 @@ class Rover
 	include Logging
 	include Utils
 
-	attr_accessor :start_directory, :pids_created
+	attr_accessor :start_directory
 	
 	CONFIG_FILE_NAMES = {
 		"npm" => 'package.json',
@@ -57,13 +59,50 @@ class Rover
 
 	def initialize
 		@start_directory = Dir.pwd
-		@pids_created = []
 
 		puts "Rover is starting in #{@start_directory}"
 	end
 
 	def list_configs
 		discover_config_files
+	end
+
+	def get_gem_info gem_name
+		JSON.parse open("http://rubygems.org/api/v1/gems/#{gem_name}.json").read
+	end
+
+	def print_gem_infos
+		begin
+			gemfile = File.read('Gemfile')
+		rescue Exception => e
+			puts e
+			puts "Is there a Gemfile in the directory you're running me in?"
+
+			return
+		end
+
+		gemfile.each_line do |l|
+			next unless l.lstrip.start_with? "gem"
+			parts = l.lstrip.split(/\s|,/)
+
+			gem_name = if parts.size == 2
+				# no version specified
+				parts.last
+			elsif parts.size > 2
+				parts[1]
+			else
+				nil
+				#bad line
+			end
+			
+
+			if gem_name
+				gem_friendly = gem_name.gsub(/[^0-9a-z_-]/i, '')
+				puts gem_friendly
+				puts get_gem_info(gem_friendly)['info']
+				puts ""
+			end
+		end
 	end
 
 	def pretty_print_configs
