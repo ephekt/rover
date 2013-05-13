@@ -5,7 +5,7 @@ $:.unshift File.expand_path("../../lib", __FILE__)
 require 'rover'
 
 if ARGV.size <= 0
-	puts "You need at least one argument:\nrover install\nrover run"
+	puts "You need at least one argument:\nrover install\nrover run\nrover gem_info"
 else
 	rover = Rover.new
 	
