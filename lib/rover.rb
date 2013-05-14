@@ -38,13 +38,6 @@ module Logging
 	end
 end
 
-# Rover.new
-# rover.list_configs #=> hash
-# rover.install_configs #=> execute on hash above
-# TODO rover.run
-# TODO rover.update_from_git
-# TODO rover.authors_from_git
-
 class Rover
 	include Logging
 	include Utils
@@ -207,38 +200,6 @@ class Rover
 			change_dir(@start_directory)
 		end
 	end
-
-=begin
-	def run_servers procfile_location = nil
-		require 'foreman'
-		
-		if procfile_location && !procfile_location.end_with?('/')
-			procfile_location = "#{procfile_location}/"
-		end
-
-		specified_procfile = "#{procfile_location}Procfile"
-		if procfile_location
-			if File.exists?(specified_procfile)
-				puts "Loading Procfile found in #{specified_procfile}"
-				change_dir procfile_location
-			else
-				puts "No Procfile found at #{procfile_location}"
-				return false
-			end
-		else
-			puts "No Procfile location specified, defaulting to #{@start_directory}"
-			change_dir @start_directory
-			if File.exists?('Procfile')
-				puts "Profile exists... running foreman"
-			else
-				puts "No Procfile found. Rover can not run servers without a Procfile"
-				return false
-			end
-		end
-
-		exec_cmd('foreman start')
-	end
-=end
 
 	private
 
